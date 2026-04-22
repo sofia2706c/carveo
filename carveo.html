@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Carveo — Viajes de confianza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #1B9AE4;
+    --sky-light: #5BBCF8;
+    --sky-dark: #0F6FAF;
+    --sky-pale: #E8F5FD;
+    --ocean: #0A4F7A;
+    --white: #FFFFFF;
+    --gray-50: #F7FAFE;
+    --gray-100: #EDF2F7;
+    --gray-300: #C4D4E0;
+    --gray-500: #6B8EA8;
+    --gray-700: #2D4A5E;
+    --gray-900: #0D1F2D;
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 24px rgba(27,154,228,0.12);
+    --shadow-lg: 0 12px 48px rgba(10,79,122,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--gray-900);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: 100vh; flex-direction: column; }
+  .screen.active { display: flex; }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--gray-100);
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 22px;
+    color: var(--sky);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--sky); }
+  .nav-actions { display: flex; gap: 8px; align-items: center; }
+  .nav-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--sky); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 24px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 15px;
+    cursor: pointer; border: none; transition: all 0.2s; text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--sky); color: white;
+    box-shadow: 0 4px 16px rgba(27,154,228,0.35);
+  }
+  .btn-primary:hover { background: var(--sky-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,154,228,0.4); }
+  .btn-secondary { background: var(--sky-pale); color: var(--sky-dark); }
+  .btn-secondary:hover { background: #D0EAF9; }
+  .btn-outline { background: transparent; color: var(--sky); border: 2px solid var(--sky); }
+  .btn-outline:hover { background: var(--sky-pale); }
+  .btn-ghost { background: transparent; color: var(--gray-700); }
+  .btn-ghost:hover { background: var(--gray-100); }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-full { width: 100%; }
+  .btn-sm { padding: 9px 16px; font-size: 13px; border-radius: 8px; }
+  .btn:active { transform: scale(0.97); }
+
+  /* ── CARDS ── */
+  .card {
+    background: white; border-radius: var(--radius);
+    border: 1px solid var(--gray-100);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .card-body { padding: 20px; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+  .badge-verified { background: #DCFCE7; color: #15803D; }
+  .badge-pending { background: #FEF3C7; color: #92400E; }
+  .badge-seats { background: var(--sky-pale); color: var(--sky-dark); }
+
+  /* ── FORMS ── */
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--gray-900);
+    background: white; transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(27,154,228,0.12); }
+  .form-select {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--gray-300); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--gray-900);
+    background: white; outline: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B8EA8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+  }
+  .form-select:focus { border-color: var(--sky); box-shadow: 0 0 0 3px rgba(27,154,228,0.12); }
+
+  /* ── DIVIDER ── */
+  .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+  .divider-line { flex: 1; height: 1px; background: var(--gray-100); }
+  .divider-text { font-size: 13px; color: var(--gray-500); }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--gray-900); color: white;
+    padding: 12px 20px; border-radius: 10px;
+    font-size: 14px; z-index: 9999;
+    transition: transform 0.3s ease; white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(13,31,45,0.6);
+    backdrop-filter: blur(4px); z-index: 500;
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-sheet {
+    background: white; border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 480px; max-height: 90vh;
+    overflow-y: auto; padding: 24px 20px 40px;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle { width: 40px; height: 4px; background: var(--gray-300); border-radius: 2px; margin: 0 auto 20px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; margin-bottom: 4px; }
+  .modal-subtitle { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; }
+
+  /* ═══════════════════════════════
+     SCREEN: LANDING
+  ═══════════════════════════════ */
+  #screen-landing {
+    background: linear-gradient(160deg, #E8F5FD 0%, #FFFFFF 50%, #F0F9FF 100%);
+  }
+
+  .hero {
+    padding: 48px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 260px; height: 260px;
+    background: radial-gradient(circle, rgba(27,154,228,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(27,154,228,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: white; border: 1px solid var(--sky-light);
+    color: var(--sky-dark); font-size: 12px; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(27,154,228,0.15);
+  }
+  .hero-tag .dot { width: 6px; height: 6px; background: var(--sky); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 38px; line-height: 1.1;
+    color: var(--gray-900); letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--sky); font-style: normal; }
+
+  .hero p {
+    font-size: 16px; color: var(--gray-500); line-height: 1.6;
+    max-width: 320px; margin: 0 auto 32px;
+  }
+
+  .hero-cta { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
+
+  .hero-destinations {
+    padding: 0 20px 32px;
+    display: flex; gap: 12px; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .hero-destinations::-webkit-scrollbar { display: none; }
+
+  .dest-chip {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; min-width: 90px;
+    background: white; border: 1px solid var(--gray-100);
+    border-radius: 16px; padding: 16px 12px;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .dest-chip:hover { border-color: var(--sky); box-shadow: var(--shadow); transform: translateY(-2px); }
+  .dest-chip .icon { font-size: 28px; }
+  .dest-chip .name { font-size: 11px; font-weight: 500; color: var(--gray-700); text-align: center; }
+
+  .features {
+    padding: 32px 20px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .features h2 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px;
+    color: var(--gray-900); margin-bottom: 4px;
+  }
+
+  .feature-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 18px; background: white;
+    border: 1px solid var(--gray-100); border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .feature-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .feature-icon.blue { background: var(--sky-pale); }
+  .feature-icon.green { background: #DCFCE7; }
+  .feature-icon.orange { background: #FEF3C7; }
+  .feature-text h3 { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .feature-text p { font-size: 13px; color: var(--gray-500); line-height: 1.5; }
+
+  .social-proof {
+    padding: 24px 20px;
+    background: var(--sky-pale);
+    border-radius: 20px; margin: 0 20px 32px;
+    text-align: center;
+  }
+  .social-proof .number {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 36px;
+    color: var(--sky-dark);
+  }
+  .social-proof p { font-size: 14px; color: var(--gray-500); }
+
+  /* ═══════════════════════════════
+     SCREEN: AUTH
+  ═══════════════════════════════ */
+  #screen-auth {
+    background: var(--gray-50);
+    align-items: center; justify-content: center;
+    padding: 40px 24px;
+  }
+  .auth-container { width: 100%; max-width: 400px; }
+  .auth-logo {
+    text-align: center; margin-bottom: 32px;
+  }
+  .auth-logo-text {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px;
+    color: var(--sky); letter-spacing: -1px;
+  }
+  .auth-logo-text span { color: var(--sky); }
+  .auth-logo p { font-size: 14px; color: var(--gray-500); margin-top: 4px; }
+
+  .auth-tabs {
+    display: flex; background: var(--gray-100); border-radius: 10px;
+    padding: 4px; margin-bottom: 24px;
+  }
+  .auth-tab {
+    flex: 1; padding: 10px; text-align: center;
+    border-radius: 8px; cursor: pointer;
+    font-size: 14px; font-weight: 500; color: var(--gray-500);
+    transition: all 0.2s;
+  }
+  .auth-tab.active { background: white; color: var(--gray-900); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+  .auth-social {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px;
+  }
+  .btn-social {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 13px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--gray-300); background: white;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; color: var(--gray-700);
+  }
+  .btn-social:hover { border-color: var(--sky); background: var(--sky-pale); }
+  .btn-social img { width: 20px; height: 20px; }
+  .verify-note {
+    display: flex; align-items: center; gap: 8px;
+    background: #DCFCE7; border-radius: 10px; padding: 12px 14px;
+    font-size: 13px; color: #15803D; margin-bottom: 16px;
+  }
+
+  /* ═══════════════════════════════
+     SCREEN: HOME (DASHBOARD)
+  ═══════════════════════════════ */
+  #screen-home { background: var(--gray-50); }
+
+  .home-header {
+    background: linear-gradient(135deg, var(--sky-dark) 0%, var(--sky) 100%);
+    padding: 24px 20px 80px;
+    position: relative; overflow: hidden;
+  }
+  .home-header::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .home-header::after {
+    content: '';
+    position: absolute; bottom: -60px; left: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 50%;
+  }
+  .home-greeting { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 4px; }
+  .home-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; color: white; }
+
+  .search-card {
+    background: white; border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    padding: 20px; margin: -52px 20px 24px;
+    position: relative; z-index: 10;
+    border: 1px solid var(--gray-100);
+  }
+  .search-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 16px; }
+
+  .route-inputs { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .route-input-wrap { position: relative; }
+  .route-dot {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .route-dot.origin { background: var(--sky); }
+  .route-dot.dest { background: var(--gray-900); }
+  .route-input {
+    width: 100%; padding: 12px 14px 12px 36px;
+    border: 1.5px solid var(--gray-100); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    background: var(--gray-50); outline: none;
+    transition: border-color 0.2s;
+  }
+  .route-input:focus { border-color: var(--sky); background: white; }
+  .route-connector {
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    width: 2px; height: 20px; background: var(--gray-300);
+    z-index: 1;
+  }
+
+  .quick-filters {
+    display: flex; gap: 8px; overflow-x: auto;
+    scrollbar-width: none; margin-bottom: 16px;
+  }
+  .quick-filters::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 20px;
+    border: 1.5px solid var(--gray-200, #E5EDF3); background: white;
+    font-size: 13px; font-weight: 500; color: var(--gray-700);
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .filter-chip.active, .filter-chip:hover { background: var(--sky); color: white; border-color: var(--sky); }
+
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+    color: var(--gray-900); margin-bottom: 16px;
+    padding: 0 20px;
+  }
+
+  .trips-list { padding: 0 20px; display: flex; flex-direction: column; gap: 14px; margin-bottom: 100px; }
+
+  .trip-card {
+    background: white; border-radius: var(--radius);
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden; cursor: pointer; transition: all 0.2s;
+  }
+  .trip-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
+  .trip-card-top { padding: 16px 16px 12px; }
+  .trip-route {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .trip-city { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
+  .trip-arrow { color: var(--gray-300); font-size: 18px; }
+  .trip-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .trip-card-bottom {
+    padding: 12px 16px; background: var(--gray-50);
+    border-top: 1px solid var(--gray-100);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .driver-info { display: flex; align-items: center; gap: 10px; }
+  .driver-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--sky); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  }
+  .driver-name { font-size: 14px; font-weight: 500; }
+  .driver-rating { font-size: 12px; color: var(--gray-500); }
+  .trip-price {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+    color: var(--sky-dark);
+  }
+  .trip-price span { font-size: 12px; font-weight: 400; color: var(--gray-500); }
+
+  /* ═══════════════════════════════
+     SCREEN: PUBLISH TRIP
+  ═══════════════════════════════ */
+  #screen-publish { background: var(--gray-50); }
+  .publish-header {
+    background: white; padding: 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .back-btn {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--gray-100); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transition: background 0.2s;
+  }
+  .back-btn:hover { background: var(--gray-300); }
+  .publish-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; }
+
+  .publish-form { padding: 20px; flex: 1; overflow-y: auto; }
+
+  .fuel-calc {
+    background: var(--sky-pale); border-radius: var(--radius);
+    padding: 16px; margin-bottom: 16px;
+    border: 1px solid rgba(27,154,228,0.2);
+  }
+  .fuel-calc-title { font-size: 13px; font-weight: 600; color: var(--sky-dark); margin-bottom: 12px; display: flex; gap: 6px; align-items: center; }
+  .fuel-result {
+    display: flex; justify-content: space-between; align-items: center;
+    background: white; border-radius: 10px; padding: 12px 16px;
+    margin-top: 10px;
+  }
+  .fuel-result-label { font-size: 13px; color: var(--gray-500); }
+  .fuel-result-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--sky-dark); }
+
+  /* ═══════════════════════════════
+     SCREEN: TRIP DETAIL
+  ═══════════════════════════════ */
+  #screen-detail { background: var(--gray-50); }
+
+  .detail-header {
+    background: linear-gradient(135deg, var(--sky-dark) 0%, var(--sky) 100%);
+    padding: 20px 20px 40px;
+    color: white;
+  }
+  .detail-header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .back-btn-white {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.2); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: white; transition: background 0.2s;
+  }
+  .back-btn-white:hover { background: rgba(255,255,255,0.3); }
+  .detail-route { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; line-height: 1.2; }
+  .detail-date { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+
+  .detail-content { padding: 0 20px 100px; margin-top: -20px; }
+
+  .detail-card {
+    background: white; border-radius: var(--radius);
+    border: 1px solid var(--gray-100); box-shadow: var(--shadow);
+    padding: 20px; margin-bottom: 16px;
+  }
+  .detail-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+
+  .driver-profile { display: flex; align-items: center; gap: 14px; }
+  .driver-avatar-lg {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px;
+    flex-shrink: 0;
+  }
+  .driver-profile-info h3 { font-weight: 600; font-size: 17px; margin-bottom: 2px; }
+  .driver-profile-info .rating { font-size: 13px; color: var(--gray-500); margin-bottom: 6px; }
+  .driver-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .stops-timeline { display: flex; flex-direction: column; gap: 0; }
+  .stop-item { display: flex; gap: 14px; align-items: flex-start; }
+  .stop-indicator { display: flex; flex-direction: column; align-items: center; }
+  .stop-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .stop-dot.origin { background: var(--sky); }
+  .stop-dot.dest { background: var(--gray-900); }
+  .stop-line { width: 2px; height: 30px; background: var(--gray-200, #E5EDF3); margin: 4px 0 4px 5px; }
+  .stop-info { padding-bottom: 16px; }
+  .stop-city { font-weight: 600; font-size: 15px; }
+  .stop-time { font-size: 13px; color: var(--gray-500); }
+
+  .seats-visual { display: flex; gap: 10px; flex-wrap: wrap; }
+  .seat-icon { font-size: 28px; transition: all 0.2s; }
+  .seat-icon.taken { filter: grayscale(1) opacity(0.35); }
+
+  .price-breakdown { display: flex; flex-direction: column; gap: 10px; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+  .price-row.total { font-weight: 700; font-size: 17px; padding-top: 10px; border-top: 1px solid var(--gray-100); }
+  .price-row span:first-child { color: var(--gray-500); }
+  .price-row.total span { color: var(--gray-900); }
+
+  /* ═══════════════════════════════
+     SCREEN: PROFILE
+  ═══════════════════════════════ */
+  #screen-profile { background: var(--gray-50); }
+  .profile-header {
+    background: linear-gradient(135deg, var(--sky-dark) 0%, var(--sky) 100%);
+    padding: 40px 20px 80px; text-align: center; position: relative;
+  }
+  .profile-avatar-wrap {
+    position: relative; display: inline-block; margin-bottom: 14px;
+  }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    border: 3px solid rgba(255,255,255,0.6);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 30px;
+    margin: 0 auto;
+  }
+  .verification-ring {
+    position: absolute; bottom: -2px; right: -2px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--success); border: 2px solid white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+  .profile-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; color: white; }
+  .profile-sub { font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 4px; }
+  .profile-stats {
+    display: flex; justify-content: center; gap: 32px; margin-top: 16px;
+  }
+  .profile-stat { text-align: center; }
+  .profile-stat .num { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 22px; color: white; }
+  .profile-stat .lbl { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  .profile-content { padding: 0 20px 100px; margin-top: -40px; }
+  .verification-card {
+    background: white; border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 20px; margin-bottom: 16px;
+    border: 1px solid var(--gray-100);
+  }
+  .verification-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 14px; }
+  .verify-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--gray-100);
+  }
+  .verify-item:last-child { border-bottom: none; }
+  .verify-item-left { display: flex; align-items: center; gap: 12px; }
+  .verify-item-icon { font-size: 22px; }
+  .verify-item-text strong { display: block; font-size: 14px; font-weight: 500; }
+  .verify-item-text span { font-size: 12px; color: var(--gray-500); }
+
+  .profile-menu { display: flex; flex-direction: column; gap: 2px; }
+  .menu-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px; background: white; border-radius: 12px;
+    cursor: pointer; transition: background 0.2s;
+    border: 1px solid var(--gray-100);
+  }
+  .menu-item:hover { background: var(--sky-pale); }
+  .menu-item-left { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+  .menu-icon { font-size: 20px; }
+  .menu-arrow { color: var(--gray-300); }
+
+  /* ═══════════════════════════════
+     BOTTOM NAV
+  ═══════════════════════════════ */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid var(--gray-100);
+    display: flex; padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; padding: 6px 0; transition: all 0.2s;
+    position: relative;
+  }
+  .nav-item .nav-icon { font-size: 22px; transition: transform 0.2s; }
+  .nav-item .nav-label { font-size: 11px; font-weight: 500; color: var(--gray-500); }
+  .nav-item.active .nav-label { color: var(--sky); }
+  .nav-item.active .nav-icon { transform: scale(1.15); }
+  .nav-item-fab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer; padding: 0;
+  }
+  .fab-btn {
+    width: 52px; height: 52px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--sky) 0%, var(--sky-dark) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: white; margin-top: -16px;
+    box-shadow: 0 4px 16px rgba(27,154,228,0.4);
+    transition: all 0.2s;
+  }
+  .fab-btn:hover { transform: scale(1.05); }
+  .nav-item-fab .nav-label { font-size: 11px; font-weight: 500; color: var(--gray-500); margin-top: 2px; }
+
+  /* ── Animations ── */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  /* ── Scrollable content ── */
+  .scrollable { overflow-y: auto; flex: 1; }
+
+  /* ── REVIEWS CAROUSEL ── */
+  .reviews-carousel {
+    display: flex; gap: 14px;
+    padding: 0 20px 8px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .reviews-carousel::-webkit-scrollbar { display: none; }
+  .review-card {
+    min-width: 280px; max-width: 280px;
+    background: white; border-radius: var(--radius);
+    border: 1px solid var(--gray-100);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 18px; scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+  .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .review-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+    flex-shrink: 0;
+  }
+  .review-name { font-weight: 600; font-size: 15px; }
+  .review-stars { font-size: 12px; margin-top: 2px; }
+  .review-dest {
+    display: inline-block; font-size: 12px; font-weight: 500;
+    color: var(--sky-dark); background: var(--sky-pale);
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;
+  }
+  .review-text {
+    font-size: 13px; color: var(--gray-700); line-height: 1.55;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOAST ═══════ -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════
+     SCREEN 1: LANDING
+═══════════════════════════════ -->
+<div id="screen-landing" class="screen active">
+  <nav>
+    <div class="nav-logo">Car<span>veo</span></div>
+    <button class="btn btn-primary btn-sm" onclick="showScreen('auth')">Entrar</button>
+  </nav>
+
+  <div class="scrollable">
+    <div class="hero">
+      <div class="hero-tag"><div class="dot"></div> Hecho en Chile 🇨🇱</div>
+      <h1>Carveo —<br><em>muévete distinto</em></h1>
+      <p>Comparte viajes a la playa, la nieve o donde quieras ir. Conecta con personas y muévete de forma simple.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="showScreen('auth')">Buscar un viaje →</button>
+        <button class="btn btn-outline" onclick="showScreen('auth')">Ofrecer mi auto</button>
+      </div>
+    </div>
+
+    <div class="hero-destinations">
+      <div class="dest-chip" onclick="showScreen('auth')"><div class="icon">🌊</div><div class="name">Playa</div></div>
+      <div class="dest-chip" onclick="showScreen('auth')"><div class="icon">🏔️</div><div class="name">Nieve</div></div>
+      <div class="dest-chip" onclick="showScreen('auth')"><div class="icon">🌿</div><div class="name">Sur</div></div>
+      <div class="dest-chip" onclick="showScreen('auth')"><div class="icon">🌵</div><div class="name">Norte</div></div>
+    </div>
+
+    <div class="features">
+      <h2>¿Por qué Carveo?</h2>
+      <div class="feature-item">
+        <div class="feature-icon blue">✅</div>
+        <div class="feature-text">
+          <h3>Perfiles 100% verificados</h3>
+          <p>Cada usuario verifica su identidad con Instagram o Facebook. Sabes exactamente con quién viajas.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon green">⛽</div>
+        <div class="feature-text">
+          <h3>Opción de cálculo automático de bencina</h3>
+          <p>Si eres conductor, la app puede calcular y sugerir el costo por pasajero automáticamente.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon orange">⭐</div>
+        <div class="feature-text">
+          <h3>Sistema de reputación</h3>
+          <p>Conductor y pasajeros se califican mutuamente. Tu historial te acompaña en cada viaje.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS CAROUSEL -->
+    <div style="padding: 0 20px 16px;">
+      <h2 style="font-family:'Syne',sans-serif; font-weight:700; font-size:22px; margin-bottom:16px;">Lo que dicen los viajeros</h2>
+    </div>
+    <div class="reviews-carousel" id="reviews-carousel">
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#1B9AE4,#0A4F7A)">M</div>
+          <div>
+            <div class="review-name">Martina L.</div>
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="review-dest">🌊 Santiago → Pichilemu</div>
+        <p class="review-text">"Increíble experiencia, llegamos todos sin problemas y la app dejó todo claro desde el principio. Saber quién era el conductor antes de subirse hace toda la diferencia."</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#22C55E,#15803D)">D</div>
+          <div>
+            <div class="review-name">Diego R.</div>
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="review-dest">🏔️ Las Condes → Valle Nevado</div>
+        <p class="review-text">"Usé Carveo para ir a la nieve y fue perfecto. El cálculo de bencina fue exacto y no hubo drama con la plata. Volvería a usar sin dudarlo."</p>
+      </div>
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#F59E0B,#B45309)">S</div>
+          <div>
+            <div class="review-name">Sofía M.</div>
+            <div class="review-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="review-dest">🌿 Santiago → Pucón</div>
+        <p class="review-text">"Lo que más me gustó fue ver el perfil verificado de mis compañeros de viaje antes de confirmar. Me sentí segura todo el tiempo. ¡Llegamos cantando!"</p>
+      </div>
+    </div>
+    <div style="padding-bottom: 40px;"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 2: AUTH
+═══════════════════════════════ -->
+<div id="screen-auth" class="screen">
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div class="auth-logo-text">Carveo</div>
+      <p>Viajes de confianza en Chile</p>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Ingresar</div>
+      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Registrarse</div>
+    </div>
+
+    <div class="verify-note">
+      🔒 Verificamos tu identidad con redes sociales para la seguridad de todos
+    </div>
+
+    <div class="auth-social">
+      <button class="btn-social" onclick="loginWithSocial('Instagram')">
+        <span style="font-size:20px">📷</span> Continuar con Instagram
+      </button>
+      <button class="btn-social" onclick="loginWithSocial('Facebook')">
+        <span style="font-size:20px">👤</span> Continuar con Facebook
+      </button>
+    </div>
+
+    <div class="divider"><div class="divider-line"></div><div class="divider-text">o con email</div><div class="divider-line"></div></div>
+
+    <div id="form-login">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="login-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input type="password" class="form-input" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="handleLogin()">Ingresar</button>
+    </div>
+
+    <div id="form-register" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input type="text" class="form-input" id="reg-name" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="reg-email" placeholder="tu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input type="password" class="form-input" id="reg-pass" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="handleRegister()">Crear cuenta</button>
+    </div>
+
+    <div style="text-align:center; margin-top:16px;">
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('landing')">← Volver</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 3: HOME
+═══════════════════════════════ -->
+<div id="screen-home" class="screen">
+  <div class="scrollable">
+    <div class="home-header">
+      <div class="home-greeting">¡Hola de nuevo 👋</div>
+      <div class="home-name" id="home-username">Cargando...</div>
+    </div>
+
+    <div class="search-card">
+      <h3>¿A dónde vamos?</h3>
+      <div class="route-inputs">
+        <div class="route-input-wrap">
+          <div class="route-dot origin"></div>
+          <input class="route-input" id="search-origin" placeholder="¿Desde dónde?" value="Santiago">
+        </div>
+        <div class="route-input-wrap">
+          <div class="route-dot dest"></div>
+          <input class="route-input" id="search-dest" placeholder="¿A dónde?">
+        </div>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <input type="date" class="form-input" id="search-date" style="flex:1; font-size:13px; padding:11px 12px;">
+        <button class="btn btn-primary" style="flex-shrink:0" onclick="searchTrips()">Buscar</button>
+      </div>
+    </div>
+
+    <div style="padding: 0 20px 12px;">
+      <div class="quick-filters">
+        <div class="filter-chip active" onclick="filterTrips('todos')">🗺️ Todos</div>
+        <div class="filter-chip" onclick="filterTrips('playa')">🏖️ Playa</div>
+        <div class="filter-chip" onclick="filterTrips('nieve')">⛷️ Nieve</div>
+        <div class="filter-chip" onclick="filterTrips('campo')">🌿 Campo</div>
+        <div class="filter-chip" onclick="filterTrips('norte')">☀️ Norte</div>
+        <div class="filter-chip" onclick="filterTrips('sur')">🌧️ Sur</div>
+      </div>
+    </div>
+
+    <div class="section-title">Viajes disponibles</div>
+    <div class="trips-list" id="trips-list">
+      <!-- injected by JS -->
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showScreen('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Inicio</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">🔍</div>
+      <div class="nav-label">Buscar</div>
+    </div>
+    <div class="nav-item-fab" onclick="showScreen('publish')">
+      <div class="fab-btn">＋</div>
+      <div class="nav-label">Publicar</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Chats</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('profile')">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Perfil</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 4: PUBLISH TRIP
+═══════════════════════════════ -->
+<div id="screen-publish" class="screen">
+  <div class="publish-header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="publish-title">Publicar viaje</div>
+  </div>
+
+  <div class="publish-form scrollable">
+    <div class="form-group">
+      <label class="form-label">Origen</label>
+      <input type="text" class="form-input" id="pub-origin" placeholder="Ej: Santiago Centro">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Destino</label>
+      <select class="form-select" id="pub-dest" onchange="updateFuelCalc()">
+        <option value="">Selecciona destino</option>
+        <option value="buchupureo">🏖️ Buchupureo (510 km)</option>
+        <option value="pichilemu">🌊 Pichilemu (200 km)</option>
+        <option value="valle-nevado">⛷️ Valle Nevado (60 km)</option>
+        <option value="farellones">🏔️ Farellones (50 km)</option>
+        <option value="la-serena">🌴 La Serena (472 km)</option>
+        <option value="pucon">🌿 Pucón (780 km)</option>
+        <option value="otro">📍 Otro destino</option>
+      </select>
+    </div>
+    <div style="display:flex; gap:12px;">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="pub-date">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Hora salida</label>
+        <input type="time" class="form-input" id="pub-time" value="08:00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Asientos disponibles</label>
+      <select class="form-select" id="pub-seats" onchange="updateFuelCalc()">
+        <option value="1">1 asiento</option>
+        <option value="2" selected>2 asientos</option>
+        <option value="3">3 asientos</option>
+        <option value="4">4 asientos</option>
+      </select>
+    </div>
+
+    <div class="fuel-calc">
+      <div class="fuel-calc-title">⛽ Calculadora de bencina</div>
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1">
+          <label class="form-label" style="font-size:12px">Rendimiento (km/L)</label>
+          <input type="number" class="form-input" id="pub-rendimiento" value="12" style="font-size:14px; padding:10px 12px" onchange="updateFuelCalc()">
+        </div>
+        <div style="flex:1">
+          <label class="form-label" style="font-size:12px">Precio bencina ($/L)</label>
+          <input type="number" class="form-input" id="pub-precio-bencina" value="1050" style="font-size:14px; padding:10px 12px" onchange="updateFuelCalc()">
+        </div>
+      </div>
+      <div class="fuel-result" id="fuel-result">
+        <div>
+          <div class="fuel-result-label">Costo total bencina</div>
+          <div style="font-size:12px; color:var(--gray-500)">Por pasajero</div>
+        </div>
+        <div style="text-align:right">
+          <div class="fuel-result-value" id="fuel-total">—</div>
+          <div style="font-size:13px; color:var(--sky-dark); font-weight:600" id="fuel-per-person">Selecciona destino</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Precio por pasajero ($ CLP)</label>
+      <input type="number" class="form-input" id="pub-price" placeholder="Ej: 15000">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Descripción (opcional)</label>
+      <textarea class="form-input" id="pub-desc" rows="3" placeholder="Ej: Salgo desde Estación Central, acepto mascotas pequeñas..."></textarea>
+    </div>
+
+    <button class="btn btn-primary btn-full" onclick="publishTrip()" style="margin-top:8px">
+      Publicar viaje 🚗
+    </button>
+    <button class="btn btn-ghost btn-full" onclick="showScreen('home')" style="margin-top:10px; margin-bottom:40px;">
+      ← Volver al inicio
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 5: TRIP DETAIL
+═══════════════════════════════ -->
+<div id="screen-detail" class="screen">
+  <div class="detail-header">
+    <div class="detail-header-top">
+      <button class="back-btn-white" onclick="showScreen('home')">←</button>
+    </div>
+    <div class="detail-route" id="detail-route">Santiago → Buchupureo</div>
+    <div class="detail-date" id="detail-date">📅 Sábado 7 de Junio · 07:30</div>
+  </div>
+
+  <div class="detail-content scrollable">
+    <!-- Driver card -->
+    <div class="detail-card">
+      <div class="detail-card-title">Conductor</div>
+      <div class="driver-profile">
+        <div class="driver-avatar-lg" id="detail-avatar">M</div>
+        <div class="driver-profile-info">
+          <h3 id="detail-driver-name">Martina L.</h3>
+          <div class="rating" id="detail-rating">⭐ 4.9 · 28 viajes</div>
+          <div class="driver-badges">
+            <span class="badge badge-verified">✅ Verificada</span>
+            <span class="badge" style="background:#F3E8FF; color:#7C3AED">📷 Instagram</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Route -->
+    <div class="detail-card">
+      <div class="detail-card-title">Ruta</div>
+      <div class="stops-timeline">
+        <div class="stop-item">
+          <div class="stop-indicator">
+            <div class="stop-dot origin"></div>
+            <div class="stop-line"></div>
+          </div>
+          <div class="stop-info">
+            <div class="stop-city" id="detail-origin">Santiago</div>
+            <div class="stop-time" id="detail-departure">Salida 07:30</div>
+          </div>
+        </div>
+        <div class="stop-item">
+          <div class="stop-indicator">
+            <div class="stop-dot dest"></div>
+          </div>
+          <div class="stop-info">
+            <div class="stop-city" id="detail-destination">Buchupureo</div>
+            <div class="stop-time" id="detail-arrival">Llegada estimada 14:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seats -->
+    <div class="detail-card">
+      <div class="detail-card-title">Asientos</div>
+      <div class="seats-visual" id="detail-seats">
+        <div class="seat-icon">🧑</div>
+        <div class="seat-icon">🧑</div>
+        <div class="seat-icon taken">🧑</div>
+        <div class="seat-icon taken">🧑</div>
+      </div>
+      <div style="margin-top:10px; font-size:13px; color:var(--gray-500)" id="detail-seats-text">2 disponibles · 2 tomados</div>
+    </div>
+
+    <!-- Price -->
+    <div class="detail-card">
+      <div class="detail-card-title">Precio</div>
+      <div class="price-breakdown">
+        <div class="price-row">
+          <span>Aporte bencina</span>
+          <span id="detail-fuel-cost">$12.250</span>
+        </div>
+        <div class="price-row">
+          <span>Peajes estimados</span>
+          <span>$2.500</span>
+        </div>
+        <div class="price-row total">
+          <span>Total por pasajero</span>
+          <span id="detail-price">$14.750</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full" style="margin-bottom:16px" onclick="joinTrip()">
+      Reservar asiento →
+    </button>
+    <button class="btn btn-secondary btn-full" onclick="contactDriver()">
+      💬 Contactar conductor
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     SCREEN 6: PROFILE
+═══════════════════════════════ -->
+<div id="screen-profile" class="screen">
+  <div class="scrollable">
+    <div class="profile-header">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" id="profile-avatar-letter">?</div>
+        <div class="verification-ring">✓</div>
+      </div>
+      <div class="profile-name" id="profile-name-display">Tu nombre</div>
+      <div class="profile-sub" id="profile-email-display">tu@email.com</div>
+      <div class="profile-stats">
+        <div class="profile-stat"><div class="num">12</div><div class="lbl">Viajes</div></div>
+        <div class="profile-stat"><div class="num">4.8</div><div class="lbl">Rating</div></div>
+        <div class="profile-stat"><div class="num">3</div><div class="lbl">Reseñas</div></div>
+      </div>
+    </div>
+
+    <div class="profile-content">
+      <div class="verification-card">
+        <div class="verification-title">🔒 Verificación de identidad</div>
+        <div class="verify-item">
+          <div class="verify-item-left">
+            <div class="verify-item-icon">📷</div>
+            <div class="verify-item-text">
+              <strong>Instagram</strong>
+              <span>Conecta para verificar tu identidad</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="verifyWith('Instagram')">Conectar</button>
+        </div>
+        <div class="verify-item">
+          <div class="verify-item-left">
+            <div class="verify-item-icon">👤</div>
+            <div class="verify-item-text">
+              <strong>Facebook</strong>
+              <span>Verificado ✅</span>
+            </div>
+          </div>
+          <span class="badge badge-verified">✅ Activo</span>
+        </div>
+        <div class="verify-item">
+          <div class="verify-item-left">
+            <div class="verify-item-icon">🪪</div>
+            <div class="verify-item-text">
+              <strong>Cédula de identidad</strong>
+              <span>Verificación adicional</span>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="verifyWith('Cédula')">Subir</button>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:100px;">
+        <div class="menu-item" onclick="showToast('Próximamente: historial de viajes')">
+          <div class="menu-item-left"><div class="menu-icon">🗺️</div> Mis viajes</div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showToast('Próximamente: mis reseñas')">
+          <div class="menu-item-left"><div class="menu-icon">⭐</div> Mis reseñas</div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showToast('Próximamente: referidos')">
+          <div class="menu-item-left"><div class="menu-icon">🎁</div> Invitar amigos y ganar</div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="showToast('Próximamente: configuración')">
+          <div class="menu-item-left"><div class="menu-icon">⚙️</div> Configuración</div>
+          <div class="menu-arrow">›</div>
+        </div>
+        <div class="menu-item" onclick="handleLogout()" style="color:var(--danger)">
+          <div class="menu-item-left" style="color:var(--danger)"><div class="menu-icon">🚪</div> Cerrar sesión</div>
+          <div class="menu-arrow" style="color:var(--danger)">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Inicio</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">🔍</div>
+      <div class="nav-label">Buscar</div>
+    </div>
+    <div class="nav-item-fab" onclick="showScreen('publish')">
+      <div class="fab-btn">＋</div>
+      <div class="nav-label">Publicar</div>
+    </div>
+    <div class="nav-item" onclick="showScreen('home')">
+      <div class="nav-icon">💬</div>
+      <div class="nav-label">Chats</div>
+    </div>
+    <div class="nav-item active" onclick="showScreen('profile')">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">Perfil</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ MODAL: TRIP DETAIL CONFIRM ═══════ -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">¿Confirmar reserva?</div>
+    <div class="modal-subtitle" id="modal-trip-summary">Santiago → Buchupureo · Sábado 7 Jun</div>
+    <div style="background:var(--sky-pale); border-radius:12px; padding:16px; margin-bottom:20px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <span style="font-size:14px; color:var(--gray-500)">Conductor</span>
+        <span style="font-size:14px; font-weight:600" id="modal-driver">Martina L. ✅</span>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span style="font-size:14px; color:var(--gray-500)">Total a pagar</span>
+        <span style="font-size:18px; font-family:'Syne',sans-serif; font-weight:700; color:var(--sky-dark)" id="modal-price">$14.750</span>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-bottom:10px" onclick="confirmReservation()">✅ Confirmar reserva</button>
+    <button class="btn btn-ghost btn-full" onclick="closeModal()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+const state = {
+  user: null,
+  currentTrip: null,
+  trips: [
+    { id:1, origin:'Santiago', dest:'Buchupureo', date:'Sáb 7 Jun', time:'07:30', seats:2, takenSeats:2, driver:'Martina L.', driverInitial:'M', rating:'4.9', trips:28, price:14750, fuelCost:12250, verified:true, social:'Instagram', category:'playa' },
+    { id:2, origin:'Santiago', dest:'Pichilemu', date:'Sáb 7 Jun', time:'06:00', seats:3, takenSeats:1, driver:'Diego R.', driverInitial:'D', rating:'4.7', trips:15, price:8500, fuelCost:7000, verified:true, social:'Facebook', category:'playa' },
+    { id:3, origin:'Las Condes', dest:'Valle Nevado', date:'Dom 8 Jun', time:'08:00', seats:1, takenSeats:2, driver:'Sofía M.', driverInitial:'S', rating:'5.0', trips:42, price:5000, fuelCost:4200, verified:true, social:'Instagram', category:'nieve' },
+    { id:4, origin:'Santiago', dest:'Farellones', date:'Sáb 7 Jun', time:'07:00', seats:2, takenSeats:1, driver:'Carlos V.', driverInitial:'C', rating:'4.8', trips:19, price:4500, fuelCost:3800, verified:true, social:'Facebook', category:'nieve' },
+    { id:5, origin:'Providencia', dest:'Pucón', date:'Vie 13 Jun', time:'17:00', seats:3, takenSeats:0, driver:'Ana P.', driverInitial:'A', rating:'4.6', trips:8, price:22000, fuelCost:19500, verified:false, social:null, category:'sur' },
+  ]
+};
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  window.scrollTo(0,0);
+  if (name === 'home' && state.user) renderTrips(state.trips);
+}
+
+// ══════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+}
+
+function loginWithSocial(provider) {
+  showToast(`Conectando con ${provider}...`);
+  setTimeout(() => {
+    state.user = { name: 'Demo User', email: 'demo@carveo.cl', initial: 'D' };
+    enterApp();
+  }, 1200);
+}
+
+function handleLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) { showToast('⚠️ Completa todos los campos'); return; }
+  showToast('Iniciando sesión...');
+  setTimeout(() => {
+    const name = email.split('@')[0];
+    state.user = { name: capitalizeFirst(name), email, initial: name[0].toUpperCase() };
+    enterApp();
+  }, 800);
+}
+
+function handleRegister() {
+  const name = document.getElementById('reg-name').value;
+  const email = document.getElementById('reg-email').value;
+  const pass = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) { showToast('⚠️ Completa todos los campos'); return; }
+  showToast('Creando tu cuenta...');
+  setTimeout(() => {
+    state.user = { name, email, initial: name[0].toUpperCase() };
+    enterApp();
+  }, 1000);
+}
+
+function handleLogout() {
+  state.user = null;
+  showScreen('landing');
+  showToast('👋 Hasta pronto');
+}
+
+function enterApp() {
+  document.getElementById('home-username').textContent = state.user.name;
+  document.getElementById('profile-name-display').textContent = state.user.name;
+  document.getElementById('profile-email-display').textContent = state.user.email;
+  document.getElementById('profile-avatar-letter').textContent = state.user.initial;
+  renderTrips(state.trips);
+  showScreen('home');
+  showToast('✅ ¡Bienvenido a Carveo!');
+}
+
+// ══════════════════════════════════════
+// TRIPS
+// ══════════════════════════════════════
+function renderTrips(trips) {
+  const container = document.getElementById('trips-list');
+  if (trips.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--gray-500)"><div style="font-size:40px; margin-bottom:12px">🔍</div><p>No hay viajes disponibles para este destino</p></div>';
+    return;
+  }
+  container.innerHTML = trips.map(trip => `
+    <div class="trip-card fade-in" onclick="openTripDetail(${trip.id})">
+      <div class="trip-card-top">
+        <div class="trip-route">
+          <div class="trip-city">${trip.origin}</div>
+          <div class="trip-arrow">→</div>
+          <div class="trip-city">${trip.dest}</div>
+        </div>
+        <div class="trip-meta">
+          <span class="badge badge-seats">🧑 ${trip.seats} asiento${trip.seats>1?'s':''}</span>
+          <span class="badge" style="background:var(--gray-100);color:var(--gray-700)">📅 ${trip.date}</span>
+          <span class="badge" style="background:var(--gray-100);color:var(--gray-700)">🕐 ${trip.time}</span>
+          ${trip.verified ? '<span class="badge badge-verified">✅ Verificado</span>' : '<span class="badge badge-pending">⏳ Pendiente</span>'}
+        </div>
+      </div>
+      <div class="trip-card-bottom">
+        <div class="driver-info">
+          <div class="driver-avatar">${trip.driverInitial}</div>
+          <div>
+            <div class="driver-name">${trip.driver}</div>
+            <div class="driver-rating">⭐ ${trip.rating} · ${trip.trips} viajes</div>
+          </div>
+        </div>
+        <div class="trip-price">$${trip.price.toLocaleString('es-CL')}<span>/persona</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterTrips(category) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  const filtered = category === 'todos' ? state.trips : state.trips.filter(t => t.category === category);
+  renderTrips(filtered);
+}
+
+function searchTrips() {
+  const dest = document.getElementById('search-dest').value.toLowerCase();
+  if (!dest) { showToast('⚠️ Escribe un destino'); return; }
+  const filtered = state.trips.filter(t => t.dest.toLowerCase().includes(dest) || t.origin.toLowerCase().includes(dest));
+  renderTrips(filtered);
+  showToast(`Mostrando viajes a "${dest}"`);
+}
+
+function openTripDetail(id) {
+  const trip = state.trips.find(t => t.id === id);
+  if (!trip) return;
+  state.currentTrip = trip;
+  document.getElementById('detail-route').textContent = `${trip.origin} → ${trip.dest}`;
+  document.getElementById('detail-date').textContent = `📅 ${trip.date} · ${trip.time}`;
+  document.getElementById('detail-avatar').textContent = trip.driverInitial;
+  document.getElementById('detail-driver-name').textContent = trip.driver;
+  document.getElementById('detail-rating').textContent = `⭐ ${trip.rating} · ${trip.trips} viajes`;
+  document.getElementById('detail-origin').textContent = trip.origin;
+  document.getElementById('detail-departure').textContent = `Salida ${trip.time}`;
+  document.getElementById('detail-destination').textContent = trip.dest;
+  document.getElementById('detail-fuel-cost').textContent = `$${trip.fuelCost.toLocaleString('es-CL')}`;
+  document.getElementById('detail-price').textContent = `$${trip.price.toLocaleString('es-CL')}`;
+
+  const seatsEl = document.getElementById('detail-seats');
+  const total = trip.seats + trip.takenSeats;
+  seatsEl.innerHTML = Array.from({length: total}, (_, i) =>
+    `<div class="seat-icon ${i < trip.takenSeats ? 'taken' : ''}">🧑</div>`
+  ).join('');
+  document.getElementById('detail-seats-text').textContent = `${trip.seats} disponible${trip.seats!==1?'s':''} · ${trip.takenSeats} tomado${trip.takenSeats!==1?'s':''}`;
+
+  showScreen('detail');
+}
+
+function joinTrip() {
+  if (!state.currentTrip) return;
+  document.getElementById('modal-trip-summary').textContent = `${state.currentTrip.origin} → ${state.currentTrip.dest} · ${state.currentTrip.date}`;
+  document.getElementById('modal-driver').textContent = `${state.currentTrip.driver} ${state.currentTrip.verified ? '✅' : ''}`;
+  document.getElementById('modal-price').textContent = `$${state.currentTrip.price.toLocaleString('es-CL')}`;
+  document.getElementById('modal-confirm').classList.add('active');
+}
+
+function confirmReservation() {
+  closeModal();
+  showToast('🎉 ¡Reserva confirmada! Revisa tus chats');
+  setTimeout(() => showScreen('home'), 1500);
+}
+
+function contactDriver() {
+  showToast('💬 Abriendo chat con el conductor...');
+}
+
+// ══════════════════════════════════════
+// PUBLISH TRIP
+// ══════════════════════════════════════
+const destDistances = { buchupureo:510, pichilemu:200, 'valle-nevado':60, farellones:50, 'la-serena':472, pucon:780, otro:300 };
+const destLabels = { buchupureo:'Buchupureo', pichilemu:'Pichilemu', 'valle-nevado':'Valle Nevado', farellones:'Farellones', 'la-serena':'La Serena', pucon:'Pucón', otro:'Destino' };
+
+function updateFuelCalc() {
+  const dest = document.getElementById('pub-dest').value;
+  const rend = parseFloat(document.getElementById('pub-rendimiento').value) || 12;
+  const precio = parseFloat(document.getElementById('pub-precio-bencina').value) || 1050;
+  const seats = parseInt(document.getElementById('pub-seats').value) || 2;
+
+  if (!dest) return;
+  const km = destDistances[dest] || 300;
+  const litros = (km * 2) / rend; // round trip
+  const totalCost = Math.round(litros * precio);
+  const perPerson = Math.round(totalCost / (seats + 1)); // +1 for driver
+
+  document.getElementById('fuel-total').textContent = `$${totalCost.toLocaleString('es-CL')}`;
+  document.getElementById('fuel-per-person').textContent = `$${perPerson.toLocaleString('es-CL')} / persona`;
+  document.getElementById('pub-price').value = perPerson;
+}
+
+function publishTrip() {
+  const origin = document.getElementById('pub-origin').value;
+  const dest = document.getElementById('pub-dest').value;
+  const date = document.getElementById('pub-date').value;
+  const time = document.getElementById('pub-time').value;
+  const price = document.getElementById('pub-price').value;
+
+  if (!origin || !dest || !date || !price) { showToast('⚠️ Completa los campos obligatorios'); return; }
+
+  const newTrip = {
+    id: state.trips.length + 1,
+    origin, dest: destLabels[dest] || dest,
+    date: formatDate(date), time,
+    seats: parseInt(document.getElementById('pub-seats').value),
+    takenSeats: 0,
+    driver: state.user ? state.user.name : 'Tú',
+    driverInitial: state.user ? state.user.initial : 'T',
+    rating: '5.0', trips: 1,
+    price: parseInt(price),
+    fuelCost: Math.round(parseInt(price) * 0.85),
+    verified: true, social: 'Instagram',
+    category: ['pichilemu','buchupureo'].includes(dest) ? 'playa' : ['valle-nevado','farellones'].includes(dest) ? 'nieve' : 'campo'
+  };
+
+  state.trips.unshift(newTrip);
+  renderTrips(state.trips);
+  showToast('🚗 ¡Viaje publicado exitosamente!');
+  setTimeout(() => showScreen('home'), 1000);
+}
+
+// ══════════════════════════════════════
+// VERIFICATION
+// ══════════════════════════════════════
+function verifyWith(provider) {
+  showToast(`Conectando con ${provider}...`);
+  setTimeout(() => showToast(`✅ ${provider} verificado exitosamente`), 1500);
+}
+
+// ══════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════
+function closeModal() {
+  document.getElementById('modal-confirm').classList.remove('active');
+}
+document.getElementById('modal-confirm').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════
+function capitalizeFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d + 'T12:00:00');
+  const days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
+}
+
+// Set default date
+document.getElementById('pub-date').valueAsDate = new Date(Date.now() + 7*24*60*60*1000);
+document.getElementById('search-date').valueAsDate = new Date();
+</script>
+</body>
+</html>
