@@ -85,7 +85,7 @@
   .btn-primary:hover { background: var(--sky-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(27,154,228,0.4); }
   .btn-secondary { background: var(--sky-pale); color: var(--sky-dark); }
   .btn-secondary:hover { background: #D0EAF9; }
-  .btn-outline { background: transparent; color: var(--sky); border: 2px solid var(--sky); }
+  .btn-outline { color: var(--sky); border-color: white; }
   .btn-outline:hover { background: var(--sky-pale); }
   .btn-ghost { background: transparent; color: var(--gray-700); }
   .btn-ghost:hover { background: var(--gray-100); }
@@ -174,12 +174,19 @@
     background: linear-gradient(160deg, #E8F5FD 0%, #FFFFFF 50%, #F0F9FF 100%);
   }
 
-  .hero {
+ .hero {
     padding: 48px 24px 40px;
     text-align: center;
     position: relative;
     overflow: hidden;
-  }
+    min-height: 100vh;
+    background-image: url('CARVEO hero.png');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
   .hero::before {
     content: '';
     position: absolute; top: -60px; right: -60px;
@@ -200,7 +207,7 @@
     background: white; border: 1px solid var(--sky-light);
     color: var(--sky-dark); font-size: 12px; font-weight: 500;
     padding: 6px 14px; border-radius: 20px; margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(27,154,228,0.15);
+    box-shadow: 0 2px 8px rgba(27,154,228,0.15); align-self: center;
   }
   .hero-tag .dot { width: 6px; height: 6px; background: var(--sky); border-radius: 50%; animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
@@ -214,9 +221,9 @@
   .hero h1 em { color: var(--sky); font-style: normal; }
 
   .hero p {
-    font-size: 16px; color: var(--gray-500); line-height: 1.6;
-    max-width: 320px; margin: 0 auto 32px;
-  }
+  font-size: 16px; color: white; line-height: 1.6;
+  max-width: 320px; margin: 0 auto 32px;
+}
 
   .hero-cta { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
 
@@ -708,9 +715,8 @@
       <p>Comparte viajes a la playa, la nieve o donde quieras ir. Conecta con personas y muévete de forma simple.</p>
       <div class="hero-cta">
         <button class="btn btn-primary" onclick="showScreen('auth')">Buscar un viaje →</button>
-        <button class="btn btn-outline" onclick="showScreen('auth')">Ofrecer mi auto</button>
+        <button class="btn btn-outline" onclick="showScreen('auth')">Ofrecer cupos</button>
       </div>
-      <img src="CARVEO hero.png" alt="Carveo - Comparte viajes" class="hero-image">
     </div>
 
     <div class="hero-destinations">
