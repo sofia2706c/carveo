@@ -223,7 +223,19 @@
   .hero p {
   font-size: 16px; color: white; line-height: 1.6;
   max-width: 320px; margin: 0 auto 32px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6), 0 0px 24px rgba(0,0,0,0.4);
 }
+
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.58);
+    pointer-events: none; z-index: 1;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+  }
 
   .hero-cta { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
 
@@ -709,13 +721,16 @@
   </nav>
 
   <div class="scrollable">
-    <div class="hero">
-      <div class="hero-tag"><div class="dot"></div> Hecho en Chile 🇨🇱</div>
-      <h1>Carveo —<br><em>muévete distinto</em></h1>
-      <p>Comparte viajes a la playa, la nieve o donde quieras ir. Conecta con personas y muévete de forma simple.</p>
-      <div class="hero-cta">
-        <button class="btn btn-primary" onclick="showScreen('auth')">Buscar un viaje →</button>
-        <button class="btn btn-outline" onclick="showScreen('auth')">Ofrecer cupos</button>
+    <div class="hero" id="hero">
+      <div class="hero-overlay" id="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-tag"><div class="dot"></div> Hecho en Chile 🇨🇱</div>
+        <h1>Carveo —<br><em>muévete distinto</em></h1>
+        <p>Comparte viajes a la playa, la nieve o donde quieras ir. Conecta con personas y muévete de forma simple.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="showScreen('auth')">Buscar un viaje →</button>
+          <button class="btn btn-outline" onclick="showScreen('auth')">Ofrecer cupos</button>
+        </div>
       </div>
     </div>
 
@@ -1509,6 +1524,25 @@ function formatDate(d) {
   const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]}`;
 }
+
+// ══════════════════════════════════════
+// HERO FLASHLIGHT EFFECT
+// ══════════════════════════════════════
+const heroEl = document.getElementById('hero');
+const heroOverlay = document.getElementById('hero-overlay');
+
+heroEl.addEventListener('mousemove', (e) => {
+  const rect = heroEl.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 100;
+  const y = ((e.clientY - rect.top) / rect.height) * 100;
+  heroOverlay.style.transition = 'none';
+  heroOverlay.style.background = `radial-gradient(circle 220px at ${x}% ${y}%, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.68) 65%)`;
+});
+
+heroEl.addEventListener('mouseleave', () => {
+  heroOverlay.style.transition = 'background 0.7s ease';
+  heroOverlay.style.background = 'rgba(0,0,0,0.58)';
+});
 
 // Set default date
 document.getElementById('pub-date').valueAsDate = new Date(Date.now() + 7*24*60*60*1000);
